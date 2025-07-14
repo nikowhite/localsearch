@@ -2,7 +2,7 @@ import re
 
 try:
     from nltk.stem.snowball import SnowballStemmer
-    stemmer = SnowballStemmer("russian")
+    stemmer = SnowballStemmer("english")
 except ImportError:
     stemmer = None
 

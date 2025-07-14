@@ -3,12 +3,11 @@ from indexer import Indexer
 from searcher import Searcher
 
 def main():
-    parser = argparse.ArgumentParser(description="Простой поисковый движок по локальным текстовым файлам.")
-    parser.add_argument('query', nargs='*', help='Строка поискового запроса')
-    parser.add_argument('--index', default='data/index.json', help='Путь к файлу индекса')
-    parser.add_argument('--reindex', action='store_true', help='Переиндексировать папку документов')
-    parser.add_argument('--docs', default='data/docs', help='Папка с документами для индексации')
-    parser.add_argument('--top', type=int, default=10, help='Сколько результатов выводить')
+    parser = argparse.ArgumentParser(description="Simple search engine for local text files.")
+    parser.add_argument('query', nargs='*', help='Search query string')
+    parser.add_argument('--reindex', action='store_true', help='Reindex the documents folder')
+    parser.add_argument('--docs', default='data/docs', help='Folder with documents to index')
+    parser.add_argument('--top', type=int, default=10, help='How many results to show')
     args = parser.parse_args()
 
     indexer = Indexer()
@@ -16,10 +15,8 @@ def main():
     if args.reindex:
         print(f'Indexing directory: {args.docs} ...')
         indexer.index_directory(args.docs)
-        indexer.save(args.index)
-        print(f'Index saved to {args.index}')
-    else:
-        indexer.load(args.index)
+        print('Indexing complete.')
+    # No need to load or save, SQLite is used automatically
 
     if args.query:
         query = ' '.join(args.query)

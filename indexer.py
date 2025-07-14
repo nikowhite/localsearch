@@ -10,6 +10,29 @@ class Indexer:
         self.conn = None
         self._ensure_db()
 
+        # Load everything from SQLite into dictionaries for convenience
+        self.inverted_index = defaultdict(list)
+        self.doc_freq = {}
+        self.doc_lengths = {}
+        self.documents = {}
+
+        for term in self._get_all_terms():
+            self.inverted_index[term] = self.get_inverted_index(term)
+
+        for doc_id, path in self.get_documents().items():
+            self.documents[doc_id] = path
+            self.doc_lengths[doc_id] = self.get_doc_length(doc_id)
+
+        cur = self.conn.cursor()
+        for row in cur.execute("SELECT term, df FROM doc_freq"):
+            self.doc_freq[row[0]] = row[1]
+
+    def _get_all_terms(self):
+        cur = self.conn.cursor()
+        cur.execute("SELECT DISTINCT term FROM inverted_index")
+        return [row[0] for row in cur.fetchall()]
+
+
     def _ensure_db(self):
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         self.conn = sqlite3.connect(self.db_path)

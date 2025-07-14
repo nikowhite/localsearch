@@ -1,12 +1,29 @@
 import math
+from collections import defaultdict
 from utils import tokenize, normalize
 
 class Searcher:
     def __init__(self, indexer):
-        self.indexer = indexer # Indexer instance
+        self.indexer = indexer
+
+        self.inverted_index = defaultdict(list)
+        self.doc_freq = {}
+        self.doc_lengths = {}
+        self.documents = {}
+
+        for term in self._get_all_terms():
+            self.inverted_index[term] = indexer.get_inverted_index(term)
+
+        for doc_id, path in indexer.get_documents().items():
+            self.documents[doc_id] = path
+            self.doc_lengths[doc_id] = indexer.get_doc_length(doc_id)
+
+        cur = indexer.conn.cursor()
+        for row in cur.execute("SELECT term, df FROM doc_freq"):
+            self.doc_freq[row[0]] = row[1]
         
     def bm25(self, term, doc_id, k1=1.5, b=0.75):
-        postings = dict(self.indexer.inverted_index.get(term, []))
+        postings = dict(self.inverted_index.get(term, []))
         tf = postings.get(doc_id, 0)
         if tf == 0:
             return 0.0
@@ -19,7 +36,7 @@ class Searcher:
         return score
 
     def tf_idf(self, term, doc_id):
-        postings = dict(self.indexer.inverted_index.get(term, []))
+        postings = dict(self.inverted_index.get(term, []))
         tf = postings.get(doc_id, 0)
         if tf == 0:
             return 0.0
@@ -52,7 +69,7 @@ class Searcher:
         not_mode = False
 
         def docs_for_term(term):
-            return set(doc_id for doc_id, _ in self.indexer.inverted_index.get(term, []))
+            return set(doc_id for doc_id, _ in self.inverted_index.get(term, []))
 
         i = 0
         while i < len(tokens):
@@ -116,7 +133,7 @@ class Searcher:
         """
         Оставлено для обратной совместимости и тестов.
         """
-        postings = dict(self.indexer.inverted_index.get(term, []))
+        postings = dict(self.inverted_index.get(term, []))
         tf = postings.get(doc_id, 0)
         if tf == 0:
             return 0.0
@@ -124,6 +141,11 @@ class Searcher:
         N = len(self.indexer.documents)
         idf = math.log((N + 1) / (df + 1)) + 1
         return tf * idf
+    
+    def _get_all_terms(self):
+        cur = self.indexer.conn.cursor()
+        cur.execute("SELECT DISTINCT term FROM inverted_index")
+        return [row[0] for row in cur.fetchall()]
 
 # Example usage:
 # from indexer import Indexer
