@@ -1,0 +1,4 @@
+nltk
+beautifulsoup4
+PyPDF2
+pytest
