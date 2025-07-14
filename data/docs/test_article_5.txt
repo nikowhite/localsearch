@@ -1,0 +1,7 @@
+Title: Ethics and Technology
+
+The intersection of ethics and technology is more important than ever. As artificial intelligence and surveillance systems advance, developers must consider privacy, fairness, and human rights.
+
+Transparent design, accountability, and ethical guidelines are essential in building trust between users and systems.
+
+Regulations such as GDPR are an attempt to enforce these principles in the digital age.

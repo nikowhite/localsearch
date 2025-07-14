@@ -1,0 +1,7 @@
+Title: Introduction to Python Programming
+
+Python is a popular programming language known for its simplicity and readability. It is widely used in web development, data analysis, artificial intelligence, and automation.
+
+Python supports multiple programming paradigms including procedural, object-oriented, and functional programming. With libraries like NumPy, Pandas, and TensorFlow, Python is an essential tool for modern developers.
+
+Its active community and rich ecosystem make it a great choice for beginners and professionals alike.

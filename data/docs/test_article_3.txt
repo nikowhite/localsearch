@@ -1,0 +1,5 @@
+Title: What is Machine Learning?
+
+Machine learning is a subset of artificial intelligence that allows software to improve automatically through experience. It focuses on the development of algorithms that can access data and use it to learn.
+
+There are three main types of machine learning: supervised, unsupervised, and reinforcement learning. These techniques power modern applications like recommendation engines, fraud detection, and self-driving cars.
